@@ -1,0 +1,22 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+
+
+@theme {
+    
+    --color-menu-bar-brown: #EADDCA;
+    --color-btn01-green-500: #8A9A5B;
+    --color-btn-hover-green-800: #4C5532;
+    --color-footer-brown-800: #74634D;
+    --color-text-slc-green-500: #8A9A5B;
+    --color-text-white: #FFFFFF;
+    --color-text-black: #000000;
+    --color-green-titulos: #4C5532;
+    
+    --font-playfair: "Playfair Display", serif;
+    --font-montserrat:  "Montserrat", sans-serif;
+}
+
+
+@import "tailwindcss";
