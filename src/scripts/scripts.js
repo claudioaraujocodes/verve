@@ -44,13 +44,14 @@ async function handleSubmit(e) {
         const result = await response.json();
 
         if (response.ok) {
-            alert(result.message)
+            alert("Sua mensagem foi enviada!")
+            //alert(result.message)
 
             // e.target é o próprio formulário. Usamos o .reset() para limpar os campos
             e.target.reset();
 
         }else {
-            alert(`Erro: ${result.message}`)
+            console.log(`status: ${result.message}`)
         }
 
        
