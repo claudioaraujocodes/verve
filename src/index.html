@@ -5,35 +5,47 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verve</title>
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+   
     <link rel="stylesheet" href="./output.css">
     <link rel="stylesheet" href="https://unpkg.com/lucide-static@latest/font/lucide.css">
+   
     <script src="./scripts/scripts.js" defer></script>
 </head>
 
 <body>
     <container class="flex flex-col ">
-        <nav class=" fixed z-100 flex w-full h-16 bg-menu-bar-brown justify-between items-center p-7">
-            <div class="w-[70px]">
-                <img src="./Image/logo-verve-no-slg.png" alt="logo verve">
-            </div>
-            <i class="icon-menu text-2xl! text-green-titulos font-medium"></i>
-        </nav>
+        <nav class="fixed top-0 left-0 z-50 w-full h-16 bg-menu-bar-brown shadow-sm py-2">
 
+            <div class="max-w-7xl w-full mx-auto h-full flex justify-between items-center px-6">
+
+                <div class="w-[70px]">
+                    <img src="./Image/logo-verve-no-slg.png" alt="logo verve">
+                </div>
+
+                <i class="icon-menu text-2xl! text-green-titulos font-medium"></i>
+
+            </div>
+
+        </nav>
         <header class="flex flex-col items-center mt-18">
 
-            <div class=" w-[160px]  lg:w-[260px] bg-white h-34.5 lg:h-55 flex flex-col items-center justify-center">
-                
-                <div class="text-center">
+            <div class=" w-[160px] lg:w-[260px] bg-white h-34.5 lg:h-55 flex flex-col items-center justify-center">
+
+                <div data-aos="zoom-out" data-aos-duration="1000" class="text-center">
                     <img src="./Image/logo-verve.png" alt="logo verve">
                 </div>
-                
+
             </div>
 
-            <div
-                class="max-w-180 border-t border-gray-200 py-4 flex w-[90%] px-7 justify-between font-montserrat text-sm font-normal text-green-titulos ">
-                <span>Salvador</span>
-                <span>Recife</span>
-                <span>São Paulo</span>
+            <div 
+                class="overflow-hidden max-w-180 border-t border-gray-200 py-4 flex w-[90%] px-7 justify-between font-montserrat text-sm font-normal text-green-titulos ">
+                <div data-aos="fade-down" data-aos-duration="1000">Salvador</div>
+                <div data-aos="fade-down" data-aos-duration="2000">Recife</div>
+                <div data-aos="fade-down" data-aos-duration="3000">São Paulo</div>
+               
+                
             </div>
 
             <section class=" relative overflow-hidden flex w-full h-57.5 lg:h-120 lg:items-center justify-center">
@@ -58,7 +70,7 @@
                         design vivo e arte para transformar ambientes urbanos.
                     </p>
 
-                    <button class="mt-2 lg:mt-6 w-60.5 h-9.5 border 
+                    <button class="cursor-pointer mt-2 lg:mt-6 w-60.5 h-9.5 border 
                     hover:border-none hover:bg-btn01-green-500 
                     bg-none border-white items-center justify-center
                     text-white
@@ -79,13 +91,13 @@
         gap-10 px-4 items-center w-full">
 
             <div id="card-1" class="card max-w-90 max-h-90 relative w-full 
-            h-80 overflow-hidden cursor-pointer group">
+            h-80 overflow-hidden cursor-pointer group"
+            data-aos="fade-right" data-aos-duration="1000">
 
                 <!-- CAMADA 0: Imagem -->
                 <!-- group-hover:scale-110 -->
                 <div class="absolute inset-0 z-0">
-                    <img id="card-image1" src="./Image/img02.png" 
-                       class="card-image w-full h-full object-cover 
+                    <img id="card-image1" src="./Image/img02.png" class="card-image w-full h-full object-cover 
                         transition-transform duration-700 ease-out 
                         md:group-hover:scale-110">
                 </div>
@@ -103,12 +115,11 @@
             </div>
 
             <div id="card-2" class="card max-w-90 max-h-90 relative w-full 
-            h-80 overflow-hidden cursor-pointer group">
+            h-80 overflow-hidden cursor-pointer group" data-aos="fade-left" data-aos-duration="1000">
                 <!-- CAMADA 0: Imagem -->
                 <!-- group-hover:scale-110 -->
                 <div class="absolute inset-0 z-0">
-                    <img id="card-image2" src="./Image/img03.png" 
-                        class="card-image w-full h-full object-cover 
+                    <img id="card-image2" src="./Image/img03.png" class="card-image w-full h-full object-cover 
                         transition-transform duration-700 ease-out 
                         md:group-hover:scale-110">
                 </div>
@@ -127,12 +138,11 @@
             </div>
 
             <div id="card-3" class="card max-w-90 max-h-90 relative w-full 
-            h-80 overflow-hidden cursor-pointer group">
+            h-80 overflow-hidden cursor-pointer group"  data-aos="fade-right" data-aos-duration="2000" >
                 <!-- CAMADA 0: A Imagem -->
                 <!-- group-hover:scale-110 -->
                 <div class="absolute inset-0 z-0">
-                    <img id="card-image3" src="./Image/img04.png" 
-                        class="card-image w-full h-full object-cover 
+                    <img id="card-image3" src="./Image/img04.png" class="card-image w-full h-full object-cover 
                         transition-transform duration-700 ease-out 
                         md:group-hover:scale-110">
                 </div>
@@ -151,12 +161,11 @@
             </div>
 
             <div id="card-4" class="card max-w-90 max-h-90 relative w-full 
-            h-80 overflow-hidden cursor-pointer group">
+            h-80 overflow-hidden cursor-pointer group"  data-aos="fade-left" data-aos-duration="2000">
                 <!-- CAMADA 0: A Imagem -->
                 <!-- group-hover:scale-110 -->
                 <div class="absolute inset-0 z-0">
-                    <img id="card-image4" src="./Image/img05.png" 
-                        class="card-image w-full h-full object-cover 
+                    <img id="card-image4" src="./Image/img05.png" class="card-image w-full h-full object-cover 
                         transition-transform duration-700 ease-out 
                         md:group-hover:scale-110">
                 </div>
@@ -178,7 +187,8 @@
 
         <div class="flex w-[90%] mx-auto justify-center py-4 lg:py-10 px-7 max-w-180 border-t border-gray-200 
             mt-10 lg:mt-22">
-            <h2 class="font-montserrat font-bold text-green-titulos text-center">Traga o frescor da natureza para o seu cotidiano.
+            <h2 class="font-montserrat font-bold text-green-titulos text-center">Traga o frescor da natureza para o seu
+                cotidiano.
             </h2>
         </div>
 
@@ -204,14 +214,14 @@
                         <label for="nome" class="text-sm font-montserrat font-medium text-white">Nome</label>
                         <input id="nome" type="text" placeholder="Seu nome" class="w-full border border-white placeholder-gray-400 
                         px-3 py-1 focus:outline-none focus:ring-1 focus:ring-taupe-400 text-white
-                        text-sm font-montserrat">
+                        text-sm font-montserrat  bg-white/10 backdrop-blur-sm">
                     </div>
 
                     <div class="mb-1">
                         <label for="email" class="text-sm font-medium font-montserrat text-white">Email</label>
                         <input id="email" type="email" placeholder="Seu email" class="w-full border border-white placeholder-gray-400 
                         px-3 py-1 focus:outline-none focus:ring-1 focus:ring-taupe-400 text-white
-                        font-montserrat text-sm">
+                        font-montserrat text-sm  bg-white/10 backdrop-blur-sm">
                     </div>
 
                     <div>
@@ -219,11 +229,11 @@
 
                         <textarea id="msg" type="textarea" placeholder="Como podemos ajudar?" class="w-full h-32 resize-none border border-white placeholder-gray-400 
                         px-3 py-1 focus:outline-none focus:ring-1 focus:ring-taupe-400 text-white
-                        font-montserrat text-sm"></textarea>
+                        font-montserrat text-sm bg-white/10 backdrop-blur-sm"></textarea>
 
                     </div>
 
-                    <button type="submit" class="w-full mt-2 h-9.5  bg-btn01-green-500 hover:bg-btn-hover-green-800
+                    <button type="submit" class="cursor-pointer w-full mt-2 h-9.5  bg-btn01-green-500 hover:bg-btn-hover-green-800
                      text-text-white transition-all duration-300 ease-in-out font-montserrat font-[14px] font-medium">
                         Enviar
                     </button>
@@ -247,6 +257,12 @@
             </div>
         </footer>
     </container>
+
+    <script>
+        AOS.init();
+    </script>
+
+
 </body>
 
 </html>

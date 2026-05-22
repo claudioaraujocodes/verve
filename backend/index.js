@@ -23,6 +23,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Ativa a leitura de cookies no servidor
 
+app.use(express.static('./backend/public')); //pasta com imagens
+
 // --- MIDDLEWARE DE PROTEÇÃO DE ROTAS (JWT) ---
 const checkAuth = (req, res, next) => {
     const token = req.cookies.verve_token; // Tenta ler o cookie gerado no login
