@@ -97,6 +97,8 @@ app.post('/admin/login', async (req, res) => {
 });
 
 // 3. Rota GET Protegida: O Dashboard (Agora usando o middleware checkAuth)
+// BUSCANDO DADOS PARA EXIBIR NO DASHBOARD
+
 app.get('/admin/dashboard', checkAuth, async (req, res) => {
     try {
         const messages = await User.findAll({ raw: true });
@@ -107,7 +109,98 @@ app.get('/admin/dashboard', checkAuth, async (req, res) => {
     }
 });
 
-// 4. Rota de Logout (Opcional, mas muito profissional)
+
+
+// 4. rota DELETE - EXClUINDO DADOS DO BANCO
+
+app.post('/admin/dashboard/delete/:id', checkAuth, async(req, res) => {
+    const id = req.params.id;
+
+    User.destroy({where: {id: id} })
+    res.redirect('/admin/dashboard');
+})
+
+
+// 5. Rota GET Protegida: Exportar mensagens para Excel (.xlsx)
+app.get('/admin/exportar-excel', checkAuth, async (req, res) => {
+    try {
+        const ExcelJS = require('exceljs');
+        
+        // Busca todas as mensagens do banco de dados via Sequelize
+        const messages = await User.findAll({ raw: true });
+
+        // Cria a estrutura da planilha na memória do servidor
+        const workbook = new ExcelJS.Workbook();
+        const worksheet = workbook.addWorksheet('Mensagens de Contato');
+
+        // Configura as colunas com identificadores e larguras iniciais coerentes
+        worksheet.columns = [
+            { header: 'ID', key: 'id', width: 10 },
+            { header: 'Nome Completo', key: 'nome', width: 30 },
+            { header: 'E-mail', key: 'email', width: 35 },
+            { header: 'Mensagem / Feedback', key: 'msg', width: 60 }
+        ];
+
+        // Estilização da linha de cabeçalho (Row 1) com a identidade Verve
+        const headerRow = worksheet.getRow(1);
+        headerRow.height = 25;
+        
+        headerRow.eachCell((cell) => {
+            cell.fill = {
+                type: 'pattern',
+                pattern: 'solid',
+                fgColor: { argb: 'FF74634D' } // Marrom terra oficial do projeto
+            };
+            cell.font = {
+                name: 'Arial',
+                size: 11,
+                bold: true,
+                color: { argb: 'FFFFFFFF' } // Texto branco para alto contraste
+            };
+            cell.alignment = { vertical: 'middle', horizontal: 'left' };
+        });
+
+        // Loop para injetar os dados do banco na planilha
+        messages.forEach((user) => {
+            const row = worksheet.addRow({
+                id: user.id,
+                nome: user.nome,
+                email: user.email,
+                msg: user.msg
+            });
+            
+            row.height = 20;
+            row.eachCell((cell) => {
+                cell.font = { name: 'Arial', size: 10 };
+                cell.alignment = { vertical: 'top', wrapText: true }; // Permite quebra de linha em mensagens longas
+            });
+        });
+
+        // Define os cabeçalhos HTTP necessários para fazer o navegador entender o download
+        res.setHeader(
+            'Content-Type',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+        );
+        res.setHeader(
+            'Content-Disposition',
+            'attachment; filename=relatorio_mensagens_verve.xlsx'
+        );
+
+        // Transmite os dados binários da planilha direto para a resposta do cliente
+        await workbook.xlsx.write(res);
+        res.end();
+
+    } catch (error) {
+        console.error("Erro ao exportar planilha:", error);
+        res.status(500).send("Erro interno ao gerar o arquivo de exportação.");
+    }
+});
+
+
+
+
+
+// 5. Rota de Logout (Opcional, mas muito profissional)
 app.get('/admin/logout', (req, res) => {
     res.clearCookie('verve_token');
     res.redirect('/admin/login');

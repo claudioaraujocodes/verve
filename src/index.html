@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
@@ -7,45 +7,55 @@
     <title>Verve</title>
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
-   
+
     <link rel="stylesheet" href="./output.css">
     <link rel="stylesheet" href="https://unpkg.com/lucide-static@latest/font/lucide.css">
-   
+
     <script src="./scripts/scripts.js" defer></script>
 </head>
 
-<body>
-    <container class="flex flex-col ">
-        <nav class="fixed top-0 left-0 z-50 w-full h-16 bg-menu-bar-brown shadow-sm py-2">
+<body class="overflow-x-hidden">
+    <container id="home" class="flex flex-col overflow-hidden">
+        <nav class="fixed top-0 left-0 z-50 w-full bg-menu-bar-brown shadow-sm 
+        pt-6 pb-6 md:py-0 md:h-16 flex items-center">
 
-            <div class="max-w-7xl w-full mx-auto h-full flex justify-between items-center px-6">
+            <div class="max-w-7xl w-full mx-auto px-6 flex flex-col 
+            items-center gap-4 md:flex-row md:justify-between 
+            md:items-center md:gap-0 md:h-full">
 
-                <div class="w-[70px]">
-                    <img src="./Image/logo-verve-no-slg.png" alt="logo verve">
+                <div class="w-[120px] md:w-[70px] flex items-center justify-center mt-1 md:mt-0">
+                   <a href="#home"><img data-aos="zoom-out" data-aos-duration="1000" class="md:hidden" src="./Image/logo-verve.png"
+                        alt="logo verve"></a>
+                    <a href="#home"><img class="hidden md:block" src="./Image/logo-verve-no-slg.png" alt="logo verve"></a>
                 </div>
 
-                <i class="icon-menu text-2xl! text-green-titulos font-medium"></i>
+                <div class="flex gap-6 cursor-pointer font-montserrat leading-none">
+                    <a href="#home" class="text-green-titulos hover:text-text-hover font-medium">Home</a>
+                    <a href="#servicos" class="text-green-titulos hover:text-text-hover font-medium ">Serviços</a>
+                    <a href="#verveForm" class="text-green-titulos hover:text-text-hover font-medium">Contato</a>
+                </div>
 
             </div>
 
         </nav>
         <header class="flex flex-col items-center mt-18">
 
-            <div class=" w-[160px] lg:w-[260px] bg-white h-34.5 lg:h-55 flex flex-col items-center justify-center">
+            <div class="hidden w-[160px] lg:w-[260px]  bg-white 
+            h-34.5 lg:h-55 md:flex flex-col items-center justify-center">
 
                 <div data-aos="zoom-out" data-aos-duration="1000" class="text-center">
-                    <img src="./Image/logo-verve.png" alt="logo verve">
+                    <img class="" src="./Image/logo-verve.png" alt="logo verve">
                 </div>
 
             </div>
 
-            <div 
-                class="overflow-hidden max-w-180 border-t border-gray-200 py-4 flex w-[90%] px-7 justify-between font-montserrat text-sm font-normal text-green-titulos ">
+            <div
+                class=" mt-13 md:mt-0 overflow-hidden max-w-180 md:border-t border-0 md:border-gray-200 py-4 flex w-[90%] px-7 justify-between font-montserrat text-sm font-normal text-green-titulos ">
                 <div data-aos="fade-down" data-aos-duration="1000">Salvador</div>
                 <div data-aos="fade-down" data-aos-duration="2000">Recife</div>
                 <div data-aos="fade-down" data-aos-duration="3000">São Paulo</div>
-               
-                
+
+
             </div>
 
             <section class=" relative overflow-hidden flex w-full h-57.5 lg:h-120 lg:items-center justify-center">
@@ -65,25 +75,22 @@
                 <!-- CAMADA 2: Conteúdo -->
                 <div class="absolute mt-20 lg:mt-60 flex flex-col inset-0 z-20 w-full items-center">
 
-                    <p class="text-white text-center w-[70%] font-montserrat text-[16px] lg:text-[22px]">
-                        Cuidados, curadoria botânica,
-                        design vivo e arte para transformar ambientes urbanos.
+                    <p class="text-white text-center w-[90%] md:w-[70%] font-montserrat text-[16px] lg:text-[22px]">
+                        Cuidados, curadoria botânica e arte para transformar ambientes urbanos.
                     </p>
 
-                    <button class="cursor-pointer mt-2 lg:mt-6 w-60.5 h-9.5 border 
-                    hover:border-none hover:bg-btn01-green-500 
-                    bg-none border-white items-center justify-center
-                    text-white
-                    transition-all duration-300 ease-in-out font-montserrat font-medium">
+                    <a href="#verveForm"
+                        class="cursor-pointer mt-2 lg:mt-6 w-60.5 h-9.5 border hover:border-none hover:bg-btn01-green-500 bg-none border-white flex items-center justify-center text-white transition-all duration-300 ease-in-out font-montserrat font-medium">
                         Viver a Natureza
-                    </button>
+                    </a>
                 </div>
             </section>
         </header>
 
         <div class="flex w-[90%] mx-auto justify-center py-4 lg:py-10 px-7 max-w-180 border-t border-gray-200 
             mt-10 lg:mt-22">
-            <h2 class="font-montserrat font-bold  text-green-titulos mt-2">Para o seu Jardim ou Ambiente</h2>
+            <h2 id="servicos" class=" scroll-mt-32 font-montserrat font-bold  text-green-titulos mt-2">Para o seu Jardim
+                ou Ambiente</h2>
         </div>
 
         <section class="flex flex-col 
@@ -91,8 +98,7 @@
         gap-10 px-4 items-center w-full">
 
             <div id="card-1" class="card max-w-90 max-h-90 relative w-full 
-            h-80 overflow-hidden cursor-pointer group"
-            data-aos="fade-right" data-aos-duration="1000">
+            h-80 overflow-hidden cursor-pointer group" data-aos="fade-right" data-aos-duration="1500">
 
                 <!-- CAMADA 0: Imagem -->
                 <!-- group-hover:scale-110 -->
@@ -115,7 +121,7 @@
             </div>
 
             <div id="card-2" class="card max-w-90 max-h-90 relative w-full 
-            h-80 overflow-hidden cursor-pointer group" data-aos="fade-left" data-aos-duration="1000">
+            h-80 overflow-hidden cursor-pointer group" data-aos="fade-left" data-aos-duration="1500">
                 <!-- CAMADA 0: Imagem -->
                 <!-- group-hover:scale-110 -->
                 <div class="absolute inset-0 z-0">
@@ -138,7 +144,7 @@
             </div>
 
             <div id="card-3" class="card max-w-90 max-h-90 relative w-full 
-            h-80 overflow-hidden cursor-pointer group"  data-aos="fade-right" data-aos-duration="2000" >
+            h-80 overflow-hidden cursor-pointer group" data-aos="fade-right" data-aos-duration="2500">
                 <!-- CAMADA 0: A Imagem -->
                 <!-- group-hover:scale-110 -->
                 <div class="absolute inset-0 z-0">
@@ -161,7 +167,7 @@
             </div>
 
             <div id="card-4" class="card max-w-90 max-h-90 relative w-full 
-            h-80 overflow-hidden cursor-pointer group"  data-aos="fade-left" data-aos-duration="2000">
+            h-80 overflow-hidden cursor-pointer group" data-aos="fade-left" data-aos-duration="2500">
                 <!-- CAMADA 0: A Imagem -->
                 <!-- group-hover:scale-110 -->
                 <div class="absolute inset-0 z-0">

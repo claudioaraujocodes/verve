@@ -3,37 +3,78 @@
         <h2 class="text-2xl font-bold text-gray-800 font-montserrat">Mensagens Recebidas</h2>
         <p class="text-sm text-gray-600">Gerencie os contatos enviados pelos visitantes do site Verve.</p>
     </div>
-    <span class="bg-[#cfb188] text-black text-xs font-semibold px-3 py-1 rounded-full">
-        Total: {{messages.length}}
-    </span>
+
+
+    <div class="flex flex-col items-end">
+        <span class="text-black text-xs font-semibold px-3 py-1 rounded-full">
+            Total: {{messages.length}}
+        </span>
+
+        <div class="flex flex-col items-end md:flex-row gap-2">
+
+            <a href="/admin/exportar-excel"
+                class="bg-[#93a06c] hover:bg-[#626e3e] text-white 
+                cursor-pointer text-xs flex font-bold w-20 h-8 rounded-md justify-center items-center">
+                Exportar
+            </a>
+            
+            
+            <form action="/admin/logout" method="get" class="">
+                <input type="submit" value="Sair" class="bg-[#74634D] hover:bg-[#42392d] text-white 
+            cursor-pointer flex text-xs font-bold w-20 h-8 rounded-md">
+            </form>
+
+            
+        </div>
+
+
+
+    </div>
+
 </div>
 
+
+
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-    
+
     {{#each messages}}
-        <div class="bg-white shadow-sm border border-gray-200 p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
-            <div>
-                <div class="border-b border-gray-100 pb-3 mb-3">
+    <div
+        class="bg-white shadow-sm border border-gray-200 p-5 flex flex-col justify-between hover:shadow-md transition-shadow">
+        <div>
+
+            <div class="border-b  border-gray-100 mb-3 flex flex-row  justify-between">
+                <div>
                     <h3 class="text-lg font-semibold text-gray-900 mb-1">{{this.nome}}</h3>
                     <p class="text-sm text-[#93a06c] font-mono break-all">{{this.email}}</p>
                 </div>
 
-                <div class="text-gray-700 text-sm bg-gray-50 p-3 border border-gray-100 min-h-[100px] break-words">
-                    <p class="whitespace-pre-line">{{this.msg}}</p>
-                </div>
+                <form action="/admin/dashboard/delete/{{this.id}}" method="post" class="">
+                    <input type="submit" value="Excluir" class="bg-[#93a06c] hover:bg-[#626e3e] text-white 
+                        cursor-pointer flex item-end text-xs font-bold w-16 h-8 rounded-md">
+                </form>
+
             </div>
 
-            <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-400">
-                <span>Enviado em:</span>
-                <span class="font-medium text-gray-500">{{this.createdAt}}</span>
+            <div class="text-gray-700 text-sm bg-gray-50 p-3 border border-gray-100 min-h-[100px] break-words">
+                <p class="whitespace-pre-line">{{this.msg}}</p>
             </div>
         </div>
+
+        <div class="mt-4 pt-3 border-t border-gray-100 flex justify-between items-center text-xs text-gray-400">
+            <span>Enviado em:</span>
+            <span class="font-medium text-gray-500">{{this.createdAt}}</span>
+        </div>
+
+
+
+    </div>
+
     {{/each}}
 
     {{#unless messages}}
-        <div class="col-span-full bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg text-center">
-            <p class="font-medium">Nenhuma mensagem encontrada no banco de dados até o momento.</p>
-        </div>
+    <div class="col-span-full bg-yellow-50 border border-yellow-200 text-yellow-800 p-4 rounded-lg text-center">
+        <p class="font-medium">Nenhuma mensagem encontrada no banco de dados até o momento.</p>
+    </div>
     {{/unless}}
 
 </div>
