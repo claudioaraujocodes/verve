@@ -1,3 +1,7 @@
+const path = require('path');
+require('dotenv').config({ path: path.resolve(__dirname, '.env') });
+require('dotenv').config({ path: path.resolve(__dirname, '../.env') });
+
 const express = require('express');
 const cors = require('cors');
 const { engine } = require('express-handlebars');
@@ -7,15 +11,36 @@ const cookieParser = require('cookie-parser'); // Importante para ler cookies
 const conn = require('./db/conn');
 const User = require('./models/User');
 
-require('dotenv').config({ path: './.env' });
-
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// --- FUNÇÃO AUXILIAR DE FORMATAÇÃO DE DATA BR ---
+const formatDateTimeBR = (dateInput) => {
+    if (!dateInput) return '';
+    const date = new Date(dateInput);
+    if (isNaN(date.getTime())) return dateInput;
+
+    const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado'];
+    const diaSemana = diasSemana[date.getDay()];
+
+    const dia = String(date.getDate()).padStart(2, '0');
+    const mes = String(date.getMonth() + 1).padStart(2, '0');
+    const ano = date.getFullYear();
+    const horas = String(date.getHours()).padStart(2, '0');
+    const minutos = String(date.getMinutes()).padStart(2, '0');
+
+    return `${diaSemana}, ${dia}/${mes}/${ano} ${horas}:${minutos}`;
+};
+
 // --- CONFIGURAÇÃO DO HANDLEBARS ---
-app.engine('handlebars', engine({ defaultLayout: 'main' }));
+app.engine('handlebars', engine({
+    defaultLayout: 'main',
+    helpers: {
+        formatDate: (date) => formatDateTimeBR(date)
+    }
+}));
 app.set('view engine', 'handlebars');
-app.set('views', './backend/views');
+app.set('views', path.join(__dirname, 'views'));
 
 // --- MIDDLEWARES ---
 app.use(cors());
@@ -23,7 +48,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser()); // Ativa a leitura de cookies no servidor
 
-app.use(express.static('./backend/public')); //pasta com imagens
+app.use(express.static(path.join(__dirname, 'public'))); // pasta com imagens
 
 // --- MIDDLEWARE DE PROTEÇÃO DE ROTAS (JWT) ---
 const checkAuth = (req, res, next) => {
@@ -35,7 +60,7 @@ const checkAuth = (req, res, next) => {
     }
 
     try {
-        // Verifica se o token é legítimo usando a nossa chave secreta do .env
+        // Verifica se o token é legítimo usando a chave secreta do .env
         const verified = jwt.verify(token, process.env.JWT_SECRET);
         req.admin = verified; // Injeta os dados do admin validado na requisição
         next(); // Permite o acesso à rota protegida
@@ -72,14 +97,14 @@ app.post('/admin/login', async (req, res) => {
 
     // Pegamos os valores reais e seguros direto do arquivo .env
     const envUser = process.env.ADMIN_USER;
-    const envPassword = process.env.ADMIN_PASS; 
+    const envPassword = process.env.ADMIN_PASS;
 
     // Criamos o hash baseado na variável protegida do .env de forma dinâmica
-    const envPasswordHash = bcrypt.hashSync(envPassword, 10); 
+    const envPasswordHash = bcrypt.hashSync(envPassword, 10);
 
     // Validação do usuário e checagem da senha criptografada usando Bcrypt
     if (username === envUser && bcrypt.compareSync(password, envPasswordHash)) {
-        
+
         // Cria o token JWT carregando o nome do admin no payload (válido por 1 hora)
         const token = jwt.sign({ user: username }, process.env.JWT_SECRET, { expiresIn: '1h' });
 
@@ -87,7 +112,7 @@ app.post('/admin/login', async (req, res) => {
         res.cookie('verve_token', token, {
             httpOnly: true,
             secure: false,  // Mude para true quando fizer o deploy em HTTPS (Railway)
-            maxAge: 3600000 
+            maxAge: 3600000
         });
 
         return res.redirect('/admin/dashboard');
@@ -101,7 +126,11 @@ app.post('/admin/login', async (req, res) => {
 
 app.get('/admin/dashboard', checkAuth, async (req, res) => {
     try {
-        const messages = await User.findAll({ raw: true });
+        const rawMessages = await User.findAll({ raw: true, order: [['createdAt', 'DESC']] });
+        const messages = rawMessages.map(msg => ({
+            ...msg,
+            createdAt: formatDateTimeBR(msg.createdAt)
+        }));
         res.render('dashboard', { messages });
     } catch (error) {
         console.error("Erro ao carregar o painel:", error);
@@ -111,12 +140,12 @@ app.get('/admin/dashboard', checkAuth, async (req, res) => {
 
 
 
-// 4. rota DELETE - EXClUINDO DADOS DO BANCO
+// 4. Rota DELETE - EXClUINDO DADOS DO BANCO
 
-app.post('/admin/dashboard/delete/:id', checkAuth, async(req, res) => {
+app.post('/admin/dashboard/delete/:id', checkAuth, async (req, res) => {
     const id = req.params.id;
 
-    User.destroy({where: {id: id} })
+    User.destroy({ where: { id: id } })
     res.redirect('/admin/dashboard');
 })
 
@@ -125,7 +154,7 @@ app.post('/admin/dashboard/delete/:id', checkAuth, async(req, res) => {
 app.get('/admin/exportar-excel', checkAuth, async (req, res) => {
     try {
         const ExcelJS = require('exceljs');
-        
+
         // Busca todas as mensagens do banco de dados via Sequelize
         const messages = await User.findAll({ raw: true });
 
@@ -144,7 +173,7 @@ app.get('/admin/exportar-excel', checkAuth, async (req, res) => {
         // Estilização da linha de cabeçalho (Row 1) com a identidade Verve
         const headerRow = worksheet.getRow(1);
         headerRow.height = 25;
-        
+
         headerRow.eachCell((cell) => {
             cell.fill = {
                 type: 'pattern',
@@ -168,7 +197,7 @@ app.get('/admin/exportar-excel', checkAuth, async (req, res) => {
                 email: user.email,
                 msg: user.msg
             });
-            
+
             row.height = 20;
             row.eachCell((cell) => {
                 cell.font = { name: 'Arial', size: 10 };

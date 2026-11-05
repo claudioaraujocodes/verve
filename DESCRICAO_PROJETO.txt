@@ -1,0 +1,208 @@
+================================================================================
+                            PROJETO VERVE - DOCUMENTAÇÃO TÉCNICA E FUNCIONAL
+================================================================================
+
+1. VISÃO GERAL DO PROJETO
+--------------------------------------------------------------------------------
+O Verve é uma plataforma web completa desenvolvida para a de 
+cuidados botânicos, curadoria artística e paisagismo de mesmo nome, voltada para ambientes 
+urbanos (com atuação destacada em Salvador, Recife e São Paulo).
+
+A solução é composta por uma arquitetura híbrida e modular:
+- Frontend: Landing page institucional moderna, fluida e com forte apelo visual.
+- Backend: Servidor Node.js/Express fornecendo uma API RESTful para recebimento 
+  de dados e rotas SSR (Server-Side Rendering) com Handlebars para um painel 
+  administrativo completo e seguro.
+- Banco de Dados: MySQL relacional integrado via Sequelize ORM.
+
+
+2. FUNCIONALIDADES DO FRONTEND & INTERATIVIDADES VISUAIS
+--------------------------------------------------------------------------------
+A interface do usuário foi concebida para oferecer elegância, dinamismo e uma 
+experiência imersiva:
+
+A. Navegação Fixa e Responsiva (Navbar):
+   - Barra de navegação com fixação no topo (sticky/fixed) e efeito de scroll suave 
+     (smooth scroll) direcionando para as seções (#home, #servicos, #verveForm).
+   - Logotipo dinâmico: exibe a versão completa com slogan em telas mobile e a 
+     versão compacta/minimalista em telas desktop.
+
+B. Animações de Entrada (AOS - Animate On Scroll):
+   - Os elementos visuais recebem animações coordenadas com a biblioteca AOS:
+     * Zoom-out com suavização temporal na logomarca.
+     * Fade-down escalonado nos nomes das cidades atendidas (Salvador: 1s, 
+       Recife: 2s, São Paulo: 3s).
+     * Transições laterais alternadas (fade-right e fade-left) ao rolar até os 
+       cards de serviços.
+
+C. Seção Hero (Banner Principal):
+   - Construção em camadas sobrepostas: imagem de alta resolução em destaque, 
+     camada de gradiente escuro translúcido para garantir contraste e legibilidade, 
+     e tipografia limpa com botão de ação (CTA) "Viver a Natureza" com efeito de hover.
+
+D. Cards Interativos de Serviços:
+   - Apresenta os 4 pilares: Plant Care & Sitting, Poda Ornamental, Paisagismo e 
+     Curadoria.
+   - Interatividade Desktop: efeito de zoom suave da imagem de fundo 
+     (group-hover:scale-110 com transição de 700ms).
+   - Interatividade Mobile: script personalizado em JavaScript (scripts.js) que 
+     detecta o toque/clique em telas menores (< 1024px) e aciona o toggle da classe 
+     de escala (.scale-110), permitindo a interação mesmo sem o evento hover nativo.
+
+E. Estilo Visual e Efeito Glassmorphism:
+   - Utilização de elementos translúcidos com desfoque de fundo (backdrop-blur-sm 
+     e bg-white/10) nos campos de entrada do formulário, integrando os inputs 
+     harmoniosamente à imagem botânica de fundo.
+
+
+3. FUNCIONAMENTO DO FORMULÁRIO E PERSISTÊNCIA NO BANCO
+--------------------------------------------------------------------------------
+A captura de contatos dos visitantes opera de forma assíncrona e desacoplada:
+
+A. Interceptação no Cliente (JavaScript Vanilla):
+   - O formulário (#verveForm) possui um ouvinte para o evento "submit".
+   - O comportamento padrão de recarregar a página é cancelado via e.preventDefault().
+   - Os valores dos campos "nome", "email" e "mensagem" são coletados e encapsulados 
+     em um objeto JSON.
+
+B. Envio Assíncrono (Fetch API):
+   - É disparada uma requisição POST assíncrona para a rota do backend:
+     http://localhost:3000/users
+   - Cabeçalho: Content-Type: application/json.
+   - Corpo: JSON serializado com os dados do remetente.
+
+C. Processamento e Validação no Backend:
+   - A rota POST /users do Express recebe os dados estruturados no req.body.
+   - O modelo Sequelize (User.js) valida os campos:
+     * Nome: Obrigatório (allowNull: false).
+     * E-mail: Obrigatório, formato de e-mail válido (isEmail: true) e único 
+       (unique: true) no banco de dados.
+     * Mensagem: Obrigatória (allowNull: false).
+   - Os dados são gravados na tabela `users` do banco MySQL `verve_db`.
+   - O Sequelize preenche automaticamente os carimbos de data/hora (createdAt e updatedAt).
+
+D. Retorno ao Usuário:
+   - Caso a gravação seja bem-sucedida, a API responde com status 201 Created.
+   - O frontend exibe uma notificação amigável de confirmação e limpa todos os 
+     campos do formulário utilizando e.target.reset().
+   - Em caso de falha de conexão com o servidor, é exibida mensagem de alerta 
+     orientando o usuário.
+
+
+4. ÁREA ADMINISTRATIVA (PAINEL DE CONTROLE / DASHBOARD)
+--------------------------------------------------------------------------------
+O sistema conta com um painel interno completo renderizado pelo servidor (SSR) 
+utilizando Express e Handlebars:
+
+A. Sistema de Autenticação e Login Seguro (Simulado via Variáveis de Ambiente):
+   - As credenciais de acesso do administrador são definidas e protegidas no 
+     arquivo .env (ADMIN_USER e ADMIN_PASS).
+   - Tela de Login (GET /admin/login): Formulário intuitivo e estilizado com 
+     identidade visual da Verve para inserção de usuário e senha.
+   - Processamento do Login (POST /admin/login):
+     * A senha informada é criptografada e comparada usando Bcrypt (bcrypt.compareSync), 
+       garantindo segurança mesmo sendo credenciais estáticas de ambiente.
+     * Se válido, um token JWT (JSON Web Token) é assinado com o JWT_SECRET do .env 
+       com validade de 1 hora.
+     * O token é armazenado no cliente em um cookie HttpOnly seguro chamado 
+       `verve_token`, impedindo o acesso via scripts do navegador (proteção contra XSS).
+
+B. Proteção de Rotas com Middleware (checkAuth):
+   - Todas as rotas administrativas (/admin/dashboard, /admin/exportar-excel, 
+     /admin/dashboard/delete/:id) passam pelo middleware checkAuth.
+   - O middleware lê e valida a assinatura do cookie `verve_token`. Caso o cookie 
+     não exista ou seja inválido, o acesso é imediatamente bloqueado com 
+     redirecionamento para a tela de login.
+
+C. Visualização e Informações Exibidas na Dashboard (GET /admin/dashboard):
+   - Consulta todas as mensagens cadastradas com `User.findAll({ raw: true })`.
+   - Contador Dinâmico: Exibe o total consolidado de mensagens recebidas.
+   - Cards de Mensagens: Grade responsiva que apresenta cada contato individualmente:
+     * Nome completo do remetente.
+     * E-mail de contato em destaque estilizado.
+     * Conteúdo da mensagem com preservação de quebras de linha (whitespace-pre-line).
+     * Data e horário exato de envio formatados (createdAt).
+   - Estado Vazio (Empty State): Exibe um aviso contextual caso nenhuma mensagem 
+     tenha sido cadastrada ainda.
+
+D. Exclusão de Mensagens (POST /admin/dashboard/delete/:id):
+   - Cada card no painel conta com um botão individual "Excluir".
+   - Ao acionar, o servidor executa `User.destroy({ where: { id } })`, removendo 
+     o registro permanentemente do MySQL e atualizando a visualização em tempo real.
+
+E. Exportação de Relatórios para Excel (.xlsx) (GET /admin/exportar-excel):
+   - O painel conta com um botão de exportação que compila os dados do banco 
+     diretamente em uma planilha Microsoft Excel utilizando a biblioteca ExcelJS.
+   - O arquivo é gerado em memória (sem necessidade de arquivos temporários no disco) 
+     e transmitido para download como `relatorio_mensagens_verve.xlsx`.
+   - Estilização corporativa aplicada na planilha:
+     * Cabeçalho personalizado com preenchimento em marrom terra oficial (#74634D), 
+       texto em branco e fonte em negrito.
+     * Colunas ajustadas com larguras predefinidas: ID (10), Nome Completo (30), 
+       E-mail (35) e Mensagem/Feedback (60).
+     * Ativação de quebra automática de texto (wrapText) para mensagens longas.
+
+F. Logout (GET /admin/logout):
+   - Invalida a sessão removendo o cookie `verve_token` e redireciona para o login.
+
+
+5. TECNOLOGIAS E BIBLIOTECAS UTILIZADAS
+--------------------------------------------------------------------------------
+A. Frontend:
+   - HTML5: Estrutura semântica e acessível.
+   - Tailwind CSS (v4): Framework utilitário para design responsivo, transições, 
+     paleta de cores customizada e layout flexível.
+   - JavaScript Vanilla (ES6+): Lógica assíncrona, manipulação do DOM e Fetch API.
+   - AOS (Animate On Scroll v2.3): Biblioteca leve para efeitos visuais ativados 
+     pela rolagem da página.
+   - Lucide Icons & Google Fonts (Montserrat e Playfair Display): Tipografia e ícones.
+
+B. Backend:
+   - Node.js: Ambiente de execução JavaScript no servidor.
+   - Express.js (v5): Framework web para criação da API REST e roteamento de páginas.
+   - Express-Handlebars (v8): Template engine para renderização dinâmica no servidor (SSR).
+   - JSON Web Token (jsonwebtoken v9): Criação e verificação de tokens de autenticação.
+   - Cookie-Parser (v1.4): Manipulação e leitura de cookies HTTP.
+   - BcryptJS (v3): Algoritmo de hash para validação segura de senhas.
+   - ExcelJS (v4): Geração, estilização e streaming de arquivos de planilhas Excel (.xlsx).
+   - CORS: Middleware para habilitar compartilhamento de recursos entre origens distintas.
+   - Dotenv (v17): Carregamento dinâmico e seguro de variáveis de ambiente do projeto.
+
+C. Banco de Dados:
+   - MySQL: Sistema gerenciador de banco de dados relacional (porta 3306).
+   - Sequelize (v6): ORM (Object-Relational Mapping) para modelagem, validações, 
+     criação automática de esquemas e operações de CRUD no banco.
+   - MySQL2 (v3): Driver de conexão de alta performance para Node.js.
+
+
+6. ARQUITETURA DE ARQUIVOS E DIRETÓRIOS
+--------------------------------------------------------------------------------
+verve/
+├── .env                       <- Variáveis de ambiente da raiz do projeto
+├── .gitignore                 <- Ignora dependências e arquivos sensíveis
+├── package.json               <- Dependências e scripts de execução
+├── DESCRICAO_PROJETO.txt      <- Este arquivo de documentação técnica
+│
+├── src/                       <- Arquivos do Frontend (Landing Page)
+│   ├── index.html             <- Página principal com visual institucional
+│   ├── input.css / output.css <- Arquivos de estilo e compilação do Tailwind
+│   ├── Image/                 <- Logomarcas e imagens dos cards botânicos
+│   └── scripts/
+│       └── scripts.js         <- Controle de envio do formulário e zoom mobile
+│
+└── backend/                   <- Arquivos do Backend (API e Dashboard)
+    ├── .env                   <- Variáveis de ambiente específicas do backend
+    ├── index.js               <- Servidor Express, rotas da API, SSR e autenticação
+    ├── db/
+    │   └── conn.js            <- Conexão Sequelize configurada para MySQL
+    ├── models/
+    │   └── User.js            <- Modelo da tabela `users` (contatos)
+    ├── public/                <- Arquivos estáticos servidos pelo Express
+    └── views/                 <- Templates Handlebars
+        ├── layouts/
+        │   └── main.handlebars    <- Layout base com cabeçalho e rodapé
+        ├── login.handlebars       <- Página de autenticação do administrador
+        └── dashboard.handlebars   <- Painel de controle, listagem e exportação
+
+Desenvolvido por Cláudio Araujo        
+================================================================================

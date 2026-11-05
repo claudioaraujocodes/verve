@@ -5,6 +5,23 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verve</title>
+
+    <!-- Garante que a página sempre inicie no topo em qualquer dispositivo e recarregamento -->
+    <script>
+        if ('scrollRestoration' in history) {
+            history.scrollRestoration = 'manual';
+        }
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+
+        window.addEventListener('pageshow', () => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        });
+
+        window.addEventListener('load', () => {
+            window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+        });
+    </script>
+
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
     <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
 
@@ -24,9 +41,10 @@
             md:items-center md:gap-0 md:h-full">
 
                 <div class="w-[120px] md:w-[70px] flex items-center justify-center mt-1 md:mt-0">
-                   <a href="#home"><img data-aos="zoom-out" data-aos-duration="1000" class="md:hidden" src="./Image/logo-verve.png"
-                        alt="logo verve"></a>
-                    <a href="#home"><img class="hidden md:block" src="./Image/logo-verve-no-slg.png" alt="logo verve"></a>
+                    <a href="#home"><img data-aos="zoom-out" data-aos-duration="1000" class="md:hidden"
+                            src="./Image/logo-verve.png" alt="logo verve"></a>
+                    <a href="#home"><img class="hidden md:block" src="./Image/logo-verve-no-slg.png"
+                            alt="logo verve"></a>
                 </div>
 
                 <div class="flex gap-6 cursor-pointer font-montserrat leading-none">
@@ -233,9 +251,21 @@
                     <div>
                         <label for="msg" class="text-sm font-medium font-montserrat text-white">Mensagem</label>
 
-                        <textarea id="msg" type="textarea" placeholder="Como podemos ajudar?" class="w-full h-32 resize-none border border-white placeholder-gray-400 
-                        px-3 py-1 focus:outline-none focus:ring-1 focus:ring-taupe-400 text-white
-                        font-montserrat text-sm bg-white/10 backdrop-blur-sm"></textarea>
+                        <div class="relative w-full">
+                            <textarea id="msg" type="textarea" placeholder="Como podemos ajudar?" class="w-full h-32 resize-none border border-white placeholder-gray-400 
+                            px-3 py-1 focus:outline-none focus:ring-1 focus:ring-taupe-400 text-white
+                            font-montserrat text-sm bg-white/10 backdrop-blur-sm"></textarea>
+
+                            <!-- Feedback flutuante centralizado sobre o input de Mensagem -->
+                            <div id="msgSentAlert"
+                                class="absolute inset-0 flex items-center justify-center pointer-events-none transition-opacity duration-500 ease-in-out opacity-0"
+                                style="transition: opacity 0.5s ease-in-out; opacity: 0; pointer-events: none;">
+                                <span
+                                    class="text-white font-montserrat font-bold text-base text-center select-none drop-shadow-md">
+                                    Sua mensagem foi enviada!
+                                </span>
+                            </div>
+                        </div>
 
                     </div>
 
@@ -265,6 +295,7 @@
     </container>
 
     <script>
+        window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
         AOS.init();
     </script>
 
